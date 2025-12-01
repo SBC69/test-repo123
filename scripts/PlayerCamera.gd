@@ -1,8 +1,7 @@
 extends Camera2D
 
 # Экспортируемые переменные для настройки
-@export_group("Follow Settings")
-@export var follow_player: bool = true
+@export_group("Camera Settings")
 @export var smoothing_enabled: bool = true
 @export var smoothing_speed: float = 5.0
 
@@ -13,12 +12,10 @@ extends Camera2D
 @export var limit_right_value: int = 10000000
 @export var limit_bottom_value: int = 10000000
 
-@export_group("Offset")
-@export var camera_offset: Vector2 = Vector2.ZERO
-
-var player: CharacterBody2D = null
-
 func _ready() -> void:
+	# Делаем эту камеру активной
+	make_current()
+	
 	# Включаем сглаживание камеры
 	position_smoothing_enabled = smoothing_enabled
 	position_smoothing_speed = smoothing_speed
@@ -30,50 +27,7 @@ func _ready() -> void:
 		limit_right = limit_right_value
 		limit_bottom = limit_bottom_value
 	
-	# Ищем игрока
-	_find_player()
-	
-	# Если игрок найден, устанавливаем начальную позицию
-	if player:
-		global_position = player.global_position + camera_offset
-
-func _find_player() -> void:
-	"""Поиск игрока в сцене"""
-	# Ищем в группе "player"
-	var players = get_tree().get_nodes_in_group("player")
-	if players.size() > 0:
-		player = players[0] as CharacterBody2D
-		if player:
-			print("PlayerCamera: Player found")
-		else:
-			push_warning("PlayerCamera: Node in 'player' group is not CharacterBody2D")
-	else:
-		push_warning("PlayerCamera: No player found in scene")
-
-func _process(_delta: float) -> void:
-	if not follow_player:
-		return
-	
-	# Если игрок не найден, пытаемся найти снова
-	if not player:
-		_find_player()
-		return
-	
-	# Проверяем, что игрок всё ещё существует
-	if not is_instance_valid(player):
-		player = null
-		return
-	
-	# Следуем за игроком
-	global_position = player.global_position + camera_offset
-
-func set_follow_target(target: Node2D) -> void:
-	"""Установить цель для слежения вручную"""
-	if target is CharacterBody2D:
-		player = target
-		print("PlayerCamera: Follow target set manually")
-	else:
-		push_warning("PlayerCamera: Target is not CharacterBody2D")
+	print("PlayerCamera: Camera activated")
 
 func shake(intensity: float = 10.0, duration: float = 0.3) -> void:
 	"""Эффект тряски камеры"""
