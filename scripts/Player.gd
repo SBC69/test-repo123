@@ -1,84 +1,236 @@
 extends CharacterBody2D
 
-const SPEED = 200.0
-const JUMP_VELOCITY = -400.0
-const ATTACK_DAMAGE = 20
+# Сигналы для связи с другими компонентами
+signal health_changed(new_health: int, max_health: int)
+signal died()
+signal attacked()
+signal damage_taken(damage: int)
 
-var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
-var health = 100
-var is_attacking = false
-var facing_right = true
+# Экспортируемые переменные для настройки через инспектор
+@export_group("Movement")
+@export var speed: float = 200.0
+@export var jump_velocity: float = -400.0
+@export var acceleration: float = 1000.0
+@export var friction: float = 1000.0
 
-@onready var sprite = $Sprite2D
-@onready var attack_area = $AttackArea
+@export_group("Combat")
+@export var max_health: int = 100
+@export var attack_damage: int = 20
+@export var attack_duration: float = 0.3
+@export var invincibility_duration: float = 0.5
 
-func _ready():
+@export_group("Visual Feedback")
+@export var damage_flash_color: Color = Color(1, 0.3, 0.3)
+@export var damage_flash_duration: float = 0.2
+
+# Состояния игрока
+enum State {
+	IDLE,
+	WALKING,
+	JUMPING,
+	FALLING,
+	ATTACKING,
+	DEAD
+}
+
+# Внутренние переменные
+var current_state: State = State.IDLE
+var health: int = max_health
+var is_invincible: bool = false
+var facing_right: bool = true
+var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
+
+# Ссылки на узлы
+@onready var sprite: Sprite2D = $Sprite2D
+@onready var attack_area: Area2D = $AttackArea
+
+func _ready() -> void:
 	add_to_group("player")
-	attack_area.monitoring = false
-	attack_area.body_entered.connect(_on_attack_area_body_entered)
+	_initialize_nodes()
+	health = max_health
+	health_changed.emit(health, max_health)
 
-func _physics_process(delta):
-	if health <= 0:
-		die()
+func _initialize_nodes() -> void:
+	"""Инициализация и проверка узлов"""
+	if attack_area:
+		attack_area.monitoring = false
+		attack_area.body_entered.connect(_on_attack_area_body_entered)
+	else:
+		push_warning("Player: AttackArea node not found")
+	
+	if not sprite:
+		push_warning("Player: Sprite2D node not found")
+
+func _physics_process(delta: float) -> void:
+	if current_state == State.DEAD:
 		return
 	
-	# Гравитация
+	_apply_gravity(delta)
+	_handle_input()
+	_update_state()
+	_apply_movement(delta)
+	move_and_slide()
+
+func _apply_gravity(delta: float) -> void:
+	"""Применение гравитации"""
 	if not is_on_floor():
 		velocity.y += gravity * delta
+
+func _handle_input() -> void:
+	"""Обработка пользовательского ввода"""
+	if current_state == State.ATTACKING:
+		return
 	
 	# Прыжок
 	if Input.is_action_just_pressed("jump") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
+		_jump()
 	
 	# Атака
-	if Input.is_action_just_pressed("attack") and not is_attacking:
-		attack()
-	
-	# Движение
-	if not is_attacking:
-		var direction = Input.get_axis("move_left", "move_right")
-		if direction:
-			velocity.x = direction * SPEED
-			if direction > 0:
-				facing_right = true
-				attack_area.scale.x = 1
-			else:
-				facing_right = false
-				attack_area.scale.x = -1
-		else:
-			velocity.x = move_toward(velocity.x, 0, SPEED)
-	
-	move_and_slide()
+	if Input.is_action_just_pressed("attack"):
+		_start_attack()
 
-func attack():
-	is_attacking = true
-	attack_area.monitoring = true
-	# Визуальная обратная связь - увеличим размер на момент атаки
-	sprite.scale = Vector2(1.3, 1.3)
-	await get_tree().create_timer(0.3).timeout
-	sprite.scale = Vector2(1, 1)
-	is_attacking = false
-	attack_area.monitoring = false
+func _apply_movement(delta: float) -> void:
+	"""Применение горизонтального движения"""
+	if current_state == State.ATTACKING:
+		velocity.x = move_toward(velocity.x, 0, friction * delta)
+		return
+	
+	var direction := Input.get_axis("move_left", "move_right")
+	
+	if direction != 0:
+		velocity.x = move_toward(velocity.x, direction * speed, acceleration * delta)
+		_update_facing_direction(direction)
+	else:
+		velocity.x = move_toward(velocity.x, 0, friction * delta)
 
-func take_damage(damage: int):
+func _update_state() -> void:
+	"""Обновление текущего состояния"""
+	if current_state == State.ATTACKING or current_state == State.DEAD:
+		return
+	
+	if not is_on_floor():
+		current_state = State.FALLING if velocity.y > 0 else State.JUMPING
+	elif abs(velocity.x) > 10:
+		current_state = State.WALKING
+	else:
+		current_state = State.IDLE
+
+func _update_facing_direction(direction: float) -> void:
+	"""Обновление направления взгляда персонажа"""
+	if direction > 0 and not facing_right:
+		facing_right = true
+		_flip_character()
+	elif direction < 0 and facing_right:
+		facing_right = false
+		_flip_character()
+
+func _flip_character() -> void:
+	"""Отзеркаливание персонажа"""
+	if sprite:
+		sprite.flip_h = not facing_right
+	if attack_area:
+		attack_area.scale.x = 1 if facing_right else -1
+
+func _jump() -> void:
+	"""Выполнение прыжка"""
+	velocity.y = jump_velocity
+	current_state = State.JUMPING
+
+func _start_attack() -> void:
+	"""Начало атаки"""
+	current_state = State.ATTACKING
+	attacked.emit()
+	
+	if attack_area:
+		attack_area.monitoring = true
+	
+	# Визуальная обратная связь
+	if sprite:
+		sprite.scale = Vector2(1.3, 1.3)
+	
+	await get_tree().create_timer(attack_duration).timeout
+	_end_attack()
+
+func _end_attack() -> void:
+	"""Завершение атаки"""
+	if current_state == State.DEAD:
+		return
+	
+	current_state = State.IDLE
+	
+	if attack_area:
+		attack_area.monitoring = false
+	
+	if sprite:
+		sprite.scale = Vector2(1, 1)
+
+func take_damage(damage: int) -> void:
+	"""Получение урона"""
+	if is_invincible or current_state == State.DEAD:
+		return
+	
 	health -= damage
-	# Красная вспышка при получении урона
-	sprite.modulate = Color(1, 0.3, 0.3)
-	await get_tree().create_timer(0.2).timeout
-	sprite.modulate = Color(1, 1, 1)
+	health = max(health, 0)
+	
+	damage_taken.emit(damage)
+	health_changed.emit(health, max_health)
+	
 	if health <= 0:
-		die()
+		_die()
+	else:
+		_start_invincibility()
+		_play_damage_flash()
 
-func die():
-	sprite.modulate = Color(0.5, 0.5, 0.5)
+func _start_invincibility() -> void:
+	"""Активация временной неуязвимости"""
+	is_invincible = true
+	await get_tree().create_timer(invincibility_duration).timeout
+	is_invincible = false
+
+func _play_damage_flash() -> void:
+	"""Визуальная индикация получения урона"""
+	if not sprite:
+		return
+	
+	sprite.modulate = damage_flash_color
+	await get_tree().create_timer(damage_flash_duration).timeout
+	
+	if current_state != State.DEAD and sprite:
+		sprite.modulate = Color.WHITE
+
+func _die() -> void:
+	"""Смерть персонажа"""
+	current_state = State.DEAD
+	died.emit()
+	
+	if sprite:
+		sprite.modulate = Color(0.5, 0.5, 0.5)
+	
 	set_physics_process(false)
+	
 	await get_tree().create_timer(1.0).timeout
 	get_tree().reload_current_scene()
 
-func heal(amount: int):
-	health = min(health + amount, 100)
+func heal(amount: int) -> void:
+	"""Восстановление здоровья"""
+	if current_state == State.DEAD:
+		return
+	
+	health = min(health + amount, max_health)
+	health_changed.emit(health, max_health)
 
-func _on_attack_area_body_entered(body):
-	if body.is_in_group("enemy"):
-		if body.has_method("take_damage"):
-			body.take_damage(ATTACK_DAMAGE)
+func get_current_state() -> State:
+	"""Получение текущего состояния"""
+	return current_state
+
+func is_alive() -> bool:
+	"""Проверка, жив ли персонаж"""
+	return current_state != State.DEAD
+
+func _on_attack_area_body_entered(body: Node2D) -> void:
+	"""Обработка попадания атаки по врагу"""
+	if not body.is_in_group("enemy"):
+		return
+	
+	if body.has_method("take_damage"):
+		body.take_damage(attack_damage)
