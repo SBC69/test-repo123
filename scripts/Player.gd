@@ -40,8 +40,8 @@ var is_invincible: bool = false
 var facing_right: bool = true
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
-# Ссылки на узлы
-@onready var sprite: Sprite2D = $Sprite2D
+# Ссылки на узлы (Node2D совместим с ColorRect и Sprite2D)
+@onready var sprite: Node2D = $Sprite2D
 @onready var attack_area: Area2D = $AttackArea
 
 func _ready() -> void:
@@ -127,7 +127,12 @@ func _update_facing_direction(direction: float) -> void:
 func _flip_character() -> void:
 	"""Отзеркаливание персонажа"""
 	if sprite:
-		sprite.flip_h = not facing_right
+		# Для ColorRect используем scale.x, для Sprite2D - flip_h
+		if sprite is ColorRect:
+			sprite.scale.x = -1 if not facing_right else 1
+		elif sprite is Sprite2D:
+			sprite.flip_h = not facing_right
+	
 	if attack_area:
 		attack_area.scale.x = 1 if facing_right else -1
 
@@ -146,7 +151,7 @@ func _start_attack() -> void:
 	
 	# Визуальная обратная связь
 	if sprite:
-		sprite.scale = Vector2(1.3, 1.3)
+		sprite.scale = Vector2(1.3, 1.3) if facing_right else Vector2(-1.3, 1.3)
 	
 	await get_tree().create_timer(attack_duration).timeout
 	_end_attack()
@@ -162,7 +167,7 @@ func _end_attack() -> void:
 		attack_area.monitoring = false
 	
 	if sprite:
-		sprite.scale = Vector2(1, 1)
+		sprite.scale = Vector2(1, 1) if facing_right else Vector2(-1, 1)
 
 func take_damage(damage: int) -> void:
 	"""Получение урона"""
