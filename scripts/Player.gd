@@ -40,8 +40,8 @@ var is_invincible: bool = false
 var facing_right: bool = true
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
-# Ссылки на узлы (без типизации для совместимости с ColorRect/Sprite2D)
-@onready var sprite = $Sprite2D
+# Ссылки на узлы
+@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var attack_area: Area2D = $AttackArea
 
 func _ready() -> void:
@@ -58,8 +58,11 @@ func _initialize_nodes() -> void:
 	else:
 		push_warning("Player: AttackArea node not found")
 	
-	if not sprite:
-		push_warning("Player: Sprite2D node not found")
+	if not animated_sprite:
+		push_warning("Player: AnimatedSprite2D node not found")
+	else:
+		# Запускаем начальную анимацию
+		animated_sprite.play("idle")
 
 func _physics_process(delta: float) -> void:
 	if current_state == State.DEAD:
@@ -69,6 +72,7 @@ func _physics_process(delta: float) -> void:
 	_handle_input()
 	_update_state()
 	_apply_movement(delta)
+	_update_animation()
 	move_and_slide()
 
 func _apply_gravity(delta: float) -> void:
@@ -115,6 +119,25 @@ func _update_state() -> void:
 	else:
 		current_state = State.IDLE
 
+func _update_animation() -> void:
+	"""Обновление анимации в зависимости от состояния"""
+	if not animated_sprite:
+		return
+	
+	match current_state:
+		State.IDLE:
+			animated_sprite.play("idle")
+		State.WALKING:
+			animated_sprite.play("run")
+		State.JUMPING:
+			animated_sprite.play("jump")
+		State.FALLING:
+			animated_sprite.play("fall")
+		State.ATTACKING:
+			animated_sprite.play("attack")
+		State.DEAD:
+			animated_sprite.play("death")
+
 func _update_facing_direction(direction: float) -> void:
 	"""Обновление направления взгляда персонажа"""
 	if direction > 0 and not facing_right:
@@ -126,14 +149,8 @@ func _update_facing_direction(direction: float) -> void:
 
 func _flip_character() -> void:
 	"""Отзеркаливание персонажа"""
-	if sprite:
-		# Для ColorRect используем scale.x, для Sprite2D - flip_h
-		if sprite.has_method("set_flip_h"):
-			# Это Sprite2D
-			sprite.set("flip_h", not facing_right)
-		else:
-			# Это ColorRect или другой узел
-			sprite.scale.x = -1 if not facing_right else 1
+	if animated_sprite:
+		animated_sprite.flip_h = not facing_right
 	
 	if attack_area:
 		attack_area.scale.x = 1 if facing_right else -1
@@ -151,12 +168,6 @@ func _start_attack() -> void:
 	if attack_area:
 		attack_area.monitoring = true
 	
-	# Визуальная обратная связь
-	if sprite:
-		var current_scale_x = sprite.scale.x
-		var scale_direction = 1 if current_scale_x >= 0 else -1
-		sprite.scale = Vector2(1.3 * scale_direction, 1.3)
-	
 	await get_tree().create_timer(attack_duration).timeout
 	_end_attack()
 
@@ -169,10 +180,6 @@ func _end_attack() -> void:
 	
 	if attack_area:
 		attack_area.monitoring = false
-	
-	if sprite:
-		var scale_direction = 1 if facing_right else -1
-		sprite.scale = Vector2(scale_direction, 1)
 
 func take_damage(damage: int) -> void:
 	"""Получение урона"""
@@ -199,22 +206,22 @@ func _start_invincibility() -> void:
 
 func _play_damage_flash() -> void:
 	"""Визуальная индикация получения урона"""
-	if not sprite:
+	if not animated_sprite:
 		return
 	
-	sprite.modulate = damage_flash_color
+	animated_sprite.modulate = damage_flash_color
 	await get_tree().create_timer(damage_flash_duration).timeout
 	
-	if current_state != State.DEAD and sprite:
-		sprite.modulate = Color.WHITE
+	if current_state != State.DEAD and animated_sprite:
+		animated_sprite.modulate = Color.WHITE
 
 func _die() -> void:
 	"""Смерть персонажа"""
 	current_state = State.DEAD
 	died.emit()
 	
-	if sprite:
-		sprite.modulate = Color(0.5, 0.5, 0.5)
+	if animated_sprite:
+		animated_sprite.modulate = Color(0.5, 0.5, 0.5)
 	
 	set_physics_process(false)
 	
