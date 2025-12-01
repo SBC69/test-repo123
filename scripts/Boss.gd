@@ -1,0 +1,125 @@
+extends CharacterBody2D
+
+const SPEED = 120.0
+const JUMP_FORCE = -300.0
+const ATTACK_DAMAGE = 25
+const SPECIAL_ATTACK_DAMAGE = 40
+
+var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
+var health = 200
+var max_health = 200
+var player = null
+var is_attacking = false
+var attack_cooldown = 0.0
+var phase = 1
+
+@onready var sprite = $Sprite2D
+@onready var animation_player = $AnimationPlayer
+@onready var health_bar = $HealthBar
+
+signal boss_defeated
+
+func _ready():
+	add_to_group("enemy")
+	health_bar.max_value = max_health
+	health_bar.value = health
+
+func _physics_process(delta):
+	if health <= 0:
+		return
+	
+	if not is_on_floor():
+		velocity.y += gravity * delta
+	
+	attack_cooldown -= delta
+	
+	if player and is_instance_valid(player):
+		var distance = global_position.distance_to(player.global_position)
+		
+		if attack_cooldown <= 0 and not is_attacking:
+			if phase == 2 and randf() > 0.5:
+				special_attack()
+			else:
+				attack()
+		else:
+			move_towards_player()
+	
+	move_and_slide()
+	
+	update_animation()
+
+func move_towards_player():
+	if is_attacking:
+		return
+	
+	var direction = sign(player.global_position.x - global_position.x)
+	velocity.x = direction * SPEED
+	sprite.flip_h = direction < 0
+
+func attack():
+	is_attacking = true
+	velocity.x = 0
+	attack_cooldown = 2.0
+	animation_player.play("attack")
+	
+	if player and player.has_method("take_damage"):
+		var distance = global_position.distance_to(player.global_position)
+		if distance < 80:
+			player.take_damage(ATTACK_DAMAGE)
+	
+	await animation_player.animation_finished
+	is_attacking = false
+
+func special_attack():
+	is_attacking = true
+	velocity.x = 0
+	attack_cooldown = 3.5
+	animation_player.play("special_attack")
+	
+	# Прыжок и удар сверху
+	velocity.y = JUMP_FORCE
+	await get_tree().create_timer(0.3).timeout
+	
+	if player and player.has_method("take_damage"):
+		var distance = global_position.distance_to(player.global_position)
+		if distance < 120:
+			player.take_damage(SPECIAL_ATTACK_DAMAGE)
+	
+	await animation_player.animation_finished
+	is_attacking = false
+
+func update_animation():
+	if is_attacking:
+		return
+	
+	if not is_on_floor():
+		animation_player.play("jump")
+	elif velocity.x != 0:
+		animation_player.play("run")
+	else:
+		animation_player.play("idle")
+
+func take_damage(damage: int):
+	health -= damage
+	health_bar.value = health
+	animation_player.play("hurt")
+	
+	# Вторая фаза при 50% здоровья
+	if health <= max_health / 2 and phase == 1:
+		phase = 2
+		sprite.modulate = Color(1.2, 0.8, 0.8)  # Красноватый оттенок
+	
+	if health <= 0:
+		die()
+
+func die():
+	remove_from_group("enemy")
+	animation_player.play("death")
+	set_physics_process(false)
+	$CollisionShape2D.set_deferred("disabled", true)
+	boss_defeated.emit()
+	await get_tree().create_timer(1.0).timeout
+	queue_free()
+
+func set_player(p):
+	player = p
