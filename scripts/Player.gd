@@ -40,8 +40,8 @@ var is_invincible: bool = false
 var facing_right: bool = true
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
-# Ссылки на узлы
-@onready var sprite: Node2D = $Sprite2D
+# Ссылки на узлы (без типизации для совместимости с ColorRect/Sprite2D)
+@onready var sprite = $Sprite2D
 @onready var attack_area: Area2D = $AttackArea
 
 func _ready() -> void:
@@ -132,7 +132,7 @@ func _flip_character() -> void:
 			# Это Sprite2D
 			sprite.set("flip_h", not facing_right)
 		else:
-			# Это ColorRect или другой Node2D
+			# Это ColorRect или другой узел
 			sprite.scale.x = -1 if not facing_right else 1
 	
 	if attack_area:
