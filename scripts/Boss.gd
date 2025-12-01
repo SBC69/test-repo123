@@ -14,7 +14,6 @@ var attack_cooldown = 0.0
 var phase = 1
 
 @onready var sprite = $Sprite2D
-@onready var animation_player = $AnimationPlayer
 @onready var health_bar = $HealthBar
 
 signal boss_defeated
@@ -45,8 +44,6 @@ func _physics_process(delta):
 			move_towards_player()
 	
 	move_and_slide()
-	
-	update_animation()
 
 func move_towards_player():
 	if is_attacking:
@@ -54,27 +51,27 @@ func move_towards_player():
 	
 	var direction = sign(player.global_position.x - global_position.x)
 	velocity.x = direction * SPEED
-	sprite.flip_h = direction < 0
 
 func attack():
 	is_attacking = true
 	velocity.x = 0
 	attack_cooldown = 2.0
-	animation_player.play("attack")
+	sprite.scale = Vector2(1.3, 1.3)
 	
 	if player and player.has_method("take_damage"):
 		var distance = global_position.distance_to(player.global_position)
 		if distance < 80:
 			player.take_damage(ATTACK_DAMAGE)
 	
-	await animation_player.animation_finished
+	await get_tree().create_timer(0.5).timeout
+	sprite.scale = Vector2(1, 1)
 	is_attacking = false
 
 func special_attack():
 	is_attacking = true
 	velocity.x = 0
 	attack_cooldown = 3.5
-	animation_player.play("special_attack")
+	sprite.modulate = Color(1.5, 1, 1)
 	
 	# Прыжок и удар сверху
 	velocity.y = JUMP_FORCE
@@ -85,36 +82,29 @@ func special_attack():
 		if distance < 120:
 			player.take_damage(SPECIAL_ATTACK_DAMAGE)
 	
-	await animation_player.animation_finished
+	await get_tree().create_timer(0.5).timeout
+	sprite.modulate = Color(1, 1, 1) if phase == 1 else Color(1.2, 0.8, 0.8)
 	is_attacking = false
-
-func update_animation():
-	if is_attacking:
-		return
-	
-	if not is_on_floor():
-		animation_player.play("jump")
-	elif velocity.x != 0:
-		animation_player.play("run")
-	else:
-		animation_player.play("idle")
 
 func take_damage(damage: int):
 	health -= damage
 	health_bar.value = health
-	animation_player.play("hurt")
+	sprite.modulate = Color(1, 0.3, 0.3)
+	await get_tree().create_timer(0.2).timeout
 	
 	# Вторая фаза при 50% здоровья
 	if health <= max_health / 2 and phase == 1:
 		phase = 2
-		sprite.modulate = Color(1.2, 0.8, 0.8)  # Красноватый оттенок
+		sprite.modulate = Color(1.2, 0.8, 0.8)
+	else:
+		sprite.modulate = Color(1, 1, 1) if phase == 1 else Color(1.2, 0.8, 0.8)
 	
 	if health <= 0:
 		die()
 
 func die():
 	remove_from_group("enemy")
-	animation_player.play("death")
+	sprite.modulate = Color(0.3, 0.3, 0.3)
 	set_physics_process(false)
 	$CollisionShape2D.set_deferred("disabled", true)
 	boss_defeated.emit()

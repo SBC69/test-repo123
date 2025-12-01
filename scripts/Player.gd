@@ -10,11 +10,12 @@ var is_attacking = false
 var facing_right = true
 
 @onready var sprite = $Sprite2D
-@onready var animation_player = $AnimationPlayer
 @onready var attack_area = $AttackArea
 
 func _ready():
+	add_to_group("player")
 	attack_area.monitoring = false
+	attack_area.body_entered.connect(_on_attack_area_body_entered)
 
 func _physics_process(delta):
 	if health <= 0:
@@ -40,47 +41,36 @@ func _physics_process(delta):
 			velocity.x = direction * SPEED
 			if direction > 0:
 				facing_right = true
-				sprite.flip_h = false
 				attack_area.scale.x = 1
 			else:
 				facing_right = false
-				sprite.flip_h = true
 				attack_area.scale.x = -1
 		else:
 			velocity.x = move_toward(velocity.x, 0, SPEED)
 	
 	move_and_slide()
-	
-	# Анимации
-	update_animation()
-
-func update_animation():
-	if is_attacking:
-		return
-	
-	if not is_on_floor():
-		animation_player.play("jump")
-	elif velocity.x != 0:
-		animation_player.play("run")
-	else:
-		animation_player.play("idle")
 
 func attack():
 	is_attacking = true
 	attack_area.monitoring = true
-	animation_player.play("attack")
-	await animation_player.animation_finished
+	# Визуальная обратная связь - увеличим размер на момент атаки
+	sprite.scale = Vector2(1.3, 1.3)
+	await get_tree().create_timer(0.3).timeout
+	sprite.scale = Vector2(1, 1)
 	is_attacking = false
 	attack_area.monitoring = false
 
 func take_damage(damage: int):
 	health -= damage
-	animation_player.play("hurt")
+	# Красная вспышка при получении урона
+	sprite.modulate = Color(1, 0.3, 0.3)
+	await get_tree().create_timer(0.2).timeout
+	sprite.modulate = Color(1, 1, 1)
 	if health <= 0:
 		die()
 
 func die():
-	animation_player.play("death")
+	sprite.modulate = Color(0.5, 0.5, 0.5)
 	set_physics_process(false)
 	await get_tree().create_timer(1.0).timeout
 	get_tree().reload_current_scene()

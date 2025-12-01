@@ -13,11 +13,12 @@ var patrol_direction = 1
 var patrol_timer = 0.0
 
 @onready var sprite = $Sprite2D
-@onready var animation_player = $AnimationPlayer
 @onready var detection_area = $DetectionArea
 
 func _ready():
 	add_to_group("enemy")
+	detection_area.body_entered.connect(_on_detection_area_body_entered)
+	detection_area.body_exited.connect(_on_detection_area_body_exited)
 
 func _physics_process(delta):
 	if health <= 0:
@@ -39,8 +40,6 @@ func _physics_process(delta):
 		patrol(delta)
 	
 	move_and_slide()
-	
-	update_animation()
 
 func patrol(delta):
 	patrol_timer += delta
@@ -49,40 +48,34 @@ func patrol(delta):
 		patrol_timer = 0.0
 	
 	velocity.x = patrol_direction * SPEED * 0.5
-	sprite.flip_h = patrol_direction < 0
 
 func chase_player():
 	var direction = sign(player.global_position.x - global_position.x)
 	velocity.x = direction * SPEED
-	sprite.flip_h = direction < 0
 
 func attack():
 	is_attacking = true
 	velocity.x = 0
-	animation_player.play("attack")
+	# Визуальная обратная связь
+	sprite.scale = Vector2(1.2, 1.2)
 	if player and player.has_method("take_damage"):
 		player.take_damage(ATTACK_DAMAGE)
-	await animation_player.animation_finished
+	await get_tree().create_timer(0.5).timeout
+	sprite.scale = Vector2(1, 1)
 	is_attacking = false
-
-func update_animation():
-	if is_attacking:
-		return
-	
-	if velocity.x != 0:
-		animation_player.play("run")
-	else:
-		animation_player.play("idle")
 
 func take_damage(damage: int):
 	health -= damage
-	animation_player.play("hurt")
+	# Красная вспышка при получении урона
+	sprite.modulate = Color(1, 0.3, 0.3)
+	await get_tree().create_timer(0.2).timeout
+	sprite.modulate = Color(1, 1, 1)
 	if health <= 0:
 		die()
 
 func die():
 	remove_from_group("enemy")
-	animation_player.play("death")
+	sprite.modulate = Color(0.3, 0.3, 0.3)
 	set_physics_process(false)
 	$CollisionShape2D.set_deferred("disabled", true)
 	await get_tree().create_timer(0.5).timeout
