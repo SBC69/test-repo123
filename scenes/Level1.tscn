@@ -1,21 +1,17 @@
-[gd_scene load_steps=4 format=3 uid="uid://level1"]
+[gd_scene load_steps=5 format=3 uid="uid://level1"]
 
 [ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/Player.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://enemy001" path="res://scenes/Enemy.tscn" id="2"]
+[ext_resource type="Script" path="res://scripts/DeathZone.gd" id="3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(400, 40)
 
 [node name="Level1" type="Node2D"]
 
-# ===========================================
-# СТАРТОВАЯ ЗОНА (безопасная, обучающая)
-# ===========================================
-
 [node name="Player" parent="." instance=ExtResource("1")]
 position = Vector2(100, 500)
 
-# Стартовая платформа (широкая и безопасная)
 [node name="StartPlatform" type="StaticBody2D" parent="."]
 position = Vector2(200, 550)
 
@@ -29,11 +25,6 @@ color = Color(0.4, 0.7, 0.4, 1)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StartPlatform"]
 shape = SubResource("RectangleShape2D_ground")
 
-# ===========================================
-# ОБУЧАЮЩАЯ СЕКЦИЯ 1: Простой прыжок
-# ===========================================
-
-# Низкая платформа (легкий первый прыжок)
 [node name="Platform1" type="StaticBody2D" parent="."]
 position = Vector2(550, 530)
 
@@ -47,10 +38,6 @@ color = Color(0.5, 0.5, 0.7, 1)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform1"]
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.5, 0.75)
-
-# ===========================================
-# ОБУЧАЮЩАЯ СЕКЦИЯ 2: Средний прыжок
-# ===========================================
 
 [node name="Platform2" type="StaticBody2D" parent="."]
 position = Vector2(750, 480)
@@ -66,10 +53,6 @@ color = Color(0.5, 0.5, 0.7, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.5, 0.75)
 
-# ===========================================
-# СЕКЦИЯ 3: Первый враг (обучение бою)
-# ===========================================
-
 [node name="Platform3" type="StaticBody2D" parent="."]
 position = Vector2(1000, 500)
 
@@ -84,15 +67,9 @@ color = Color(0.5, 0.5, 0.7, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.75, 0.75)
 
-# Первый враг (на безопасной платформе)
 [node name="Enemy1" parent="." instance=ExtResource("2")]
 position = Vector2(1050, 450)
 
-# ===========================================
-# СЕКЦИЯ 4: Вертикальная прогрессия
-# ===========================================
-
-# Нижняя платформа
 [node name="Platform4" type="StaticBody2D" parent="."]
 position = Vector2(1300, 500)
 
@@ -107,7 +84,6 @@ color = Color(0.5, 0.5, 0.7, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.4, 0.75)
 
-# Средняя платформа
 [node name="Platform5" type="StaticBody2D" parent="."]
 position = Vector2(1450, 420)
 
@@ -122,7 +98,6 @@ color = Color(0.5, 0.5, 0.7, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.4, 0.75)
 
-# Верхняя платформа
 [node name="Platform6" type="StaticBody2D" parent="."]
 position = Vector2(1600, 340)
 
@@ -137,10 +112,6 @@ color = Color(0.5, 0.5, 0.7, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.5, 0.75)
 
-# ===========================================
-# СЕКЦИЯ 5: Испытание (несколько врагов)
-# ===========================================
-
 [node name="Platform7" type="StaticBody2D" parent="."]
 position = Vector2(1850, 400)
 
@@ -154,16 +125,11 @@ color = Color(0.7, 0.5, 0.5, 1)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform7"]
 shape = SubResource("RectangleShape2D_ground")
 
-# Два врага для испытания
 [node name="Enemy2" parent="." instance=ExtResource("2")]
 position = Vector2(1750, 350)
 
 [node name="Enemy3" parent="." instance=ExtResource("2")]
 position = Vector2(1950, 350)
-
-# ===========================================
-# СЕКЦИЯ 6: Точные прыжки
-# ===========================================
 
 [node name="Platform8" type="StaticBody2D" parent="."]
 position = Vector2(2100, 450)
@@ -207,10 +173,6 @@ color = Color(0.5, 0.5, 0.7, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.3, 0.75)
 
-# ===========================================
-# ФИНАЛЬНАЯ СЕКЦИЯ: Награда
-# ===========================================
-
 [node name="GoalPlatform" type="StaticBody2D" parent="."]
 position = Vector2(2650, 300)
 
@@ -225,16 +187,12 @@ color = Color(1, 0.8, 0.2, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.75, 1)
 
-# Финальный враг (опциональный)
 [node name="Enemy4" parent="." instance=ExtResource("2")]
 position = Vector2(2650, 250)
 
-# ===========================================
-# НИЖНИЕ ГРАНИЦЫ (яма смерти)
-# ===========================================
-
 [node name="DeathZone" type="Area2D" parent="."]
 position = Vector2(1500, 750)
+script = ExtResource("3")
 
 [node name="ColorRect" type="ColorRect" parent="DeathZone"]
 offset_left = -2000.0
@@ -247,11 +205,6 @@ color = Color(0.3, 0.1, 0.1, 0.5)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(10, 2.5)
 
-# ===========================================
-# СТЕНЫ (границы уровня)
-# ===========================================
-
-# Левая стена
 [node name="LeftWall" type="StaticBody2D" parent="."]
 position = Vector2(-50, 400)
 
@@ -266,7 +219,6 @@ color = Color(0.2, 0.2, 0.2, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.125, 20)
 
-# Правая стена
 [node name="RightWall" type="StaticBody2D" parent="."]
 position = Vector2(2900, 400)
 

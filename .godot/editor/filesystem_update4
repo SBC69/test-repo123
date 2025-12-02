@@ -2,7 +2,5 @@ res://scenes/Enemy.tscn
 res://scenes/Player.tscn
 res://scripts/Enemy.gd
 res://scripts/Player.gd
-<<<<<<< HEAD
 res://scenes/Level1.tscn
-=======
->>>>>>> origin/main
+res://scenes/MainMenu.tscn
