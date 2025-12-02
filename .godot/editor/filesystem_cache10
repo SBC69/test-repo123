@@ -1,21 +1,21 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1764675528
-icon.svg::CompressedTexture2D::4722383742710490661::1764595101::1764595122::1::::<><><>0<>0<>abb8882c2737055cf0016c9dcee08342<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
+::res://::1764676194
+icon.svg::CompressedTexture2D::4722383742710490661::1764595101::1764676380::1::::<><><>0<>0<>abb8882c2737055cf0016c9dcee08342<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
 README.md::TextFile::-1::1764594636::0::1::::<><><>0<>0<><>::
 SETUP_CAT_ANIMATION.md::TextFile::-1::1764599153::0::1::::<><><>0<>0<><>::
 TUTORIAL.md::TextFile::-1::1764594636::0::1::::<><><>0<>0<><>::
-::res://assets/::1764599153
-::res://assets/sprites/::1764603196
-cat 1.6.png::CompressedTexture2D::3254547031557401167::1760186577::1764599758::1::::<><><>0<>0<>4d79c25336e05e74625f6cad0bc9ce63<>res://.godot/imported/cat 1.6.png-3a46e787b4dc2e45a3d5a457393cf1a5.ctex::
-rat (1).png::CompressedTexture2D::5720022834648379489::1762261462::1764675530::1::::<><><>0<>0<>c2a8cdc41a8de4b4d056f1f6350866f2<>res://.godot/imported/rat (1).png-47f6dfc0aa6a94d5240e416aff249034.ctex::
-rat (2).png::CompressedTexture2D::517633996790614677::1762261462::1764675530::1::::<><><>0<>0<>cda5fd242b3d705c2356b24065da40b8<>res://.godot/imported/rat (2).png-9cc041e2ef9a167c549beb81bb895394.ctex::
-rat (3).png::CompressedTexture2D::7610707457434918708::1762261462::1764675530::1::::<><><>0<>0<>30ac7d160f9a9af8a45352848f49ce97<>res://.godot/imported/rat (3).png-ebdf9716973549bc43334b3ab217a23f.ctex::
-::res://scenes/::1764602961
-Enemy.tscn::PackedScene::230374608784::1764594636::0::1::::<><><>0<>0<><>::res://scripts/Enemy.gd
+::res://assets/::1764676194
+::res://assets/sprites/::1764676194
+cat 1.6.png::CompressedTexture2D::3254547031557401167::1764676194::1764676380::1::::<><><>0<>0<>4d79c25336e05e74625f6cad0bc9ce63<>res://.godot/imported/cat 1.6.png-3a46e787b4dc2e45a3d5a457393cf1a5.ctex::
+rat (1).png::CompressedTexture2D::5720022834648379489::1764676194::1764676379::1::::<><><>0<>0<>c2a8cdc41a8de4b4d056f1f6350866f2<>res://.godot/imported/rat (1).png-47f6dfc0aa6a94d5240e416aff249034.ctex::
+rat (2).png::CompressedTexture2D::517633996790614677::1764676194::1764676379::1::::<><><>0<>0<>cda5fd242b3d705c2356b24065da40b8<>res://.godot/imported/rat (2).png-9cc041e2ef9a167c549beb81bb895394.ctex::
+rat (3).png::CompressedTexture2D::7610707457434918708::1764676194::1764676379::1::::<><><>0<>0<>30ac7d160f9a9af8a45352848f49ce97<>res://.godot/imported/rat (3).png-ebdf9716973549bc43334b3ab217a23f.ctex::
+::res://scenes/::1764676194
+Enemy.tscn::PackedScene::230374608784::1764676194::0::1::::<><><>0<>0<><>::uid://s4gdo1xjhnp8::::res://scripts/Enemy.gd<>uid://hm0md5altsd6::::res://assets/sprites/rat (2).png
 Level1.tscn::PackedScene::505965416::1764597281::0::1::::<><><>0<>0<><>::uid://player001::::res://scenes/Player.tscn<>uid://enemy001::::res://scenes/Enemy.tscn
 MainMenu.tscn::PackedScene::630661534222::1764594636::0::1::::<><><>0<>0<><>::res://scripts/MainMenu.gd
-Player.tscn::PackedScene::27365761918488::1764602961::0::1::::<><><>0<>0<><>::uid://unf5av2knmxp::::res://scripts/Player.gd<>uid://2as0mphutr4r::::res://scripts/PlayerCamera.gd<>uid://bmmr6cymc50n8::::res://assets/sprites/cat 1.6.png
-::res://scripts/::1764599153
+Player.tscn::PackedScene::27365761918488::1764676194::0::1::::<><><>0<>0<><>::uid://unf5av2knmxp::::res://scripts/Player.gd<>uid://2as0mphutr4r::::res://scripts/PlayerCamera.gd<>uid://bmmr6cymc50n8::::res://assets/sprites/cat 1.6.png
+::res://scripts/::1764676194
 Boss.gd::GDScript::15957092827239930::1764595101::0::1::::<>CharacterBody2D<><>0<>0<><>::
 Enemy.gd::GDScript::1323636576239779195::1764595101::0::1::::<>CharacterBody2D<><>0<>0<><>::
 GameManager.gd::GDScript::4453113507502531771::1764594636::0::1::::<>Node<><>0<>0<><>::
