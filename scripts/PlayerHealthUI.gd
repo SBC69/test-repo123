@@ -12,10 +12,10 @@ var player: CharacterBody2D = null
 @onready var heart_container: HBoxContainer = $HeartContainer
 
 func _ready() -> void:
-	# Находим игрока
+	# Находим игрока (родителя этого CanvasLayer)
 	player = get_parent()
-	if not player or not player.is_in_group("player"):
-		push_error("PlayerHealthUI должен быть дочерним узлом Player")
+	if not player:
+		push_error("PlayerHealthUI: не найден родительский узел")
 		return
 	
 	# Подключаемся к сигналам
@@ -26,7 +26,8 @@ func _ready() -> void:
 	_create_hearts()
 	
 	# Устанавливаем начальное здоровье
-	_update_hearts(player.health, player.max_health)
+	if player.has("health") and player.has("max_health"):
+		_update_hearts(player.health, player.max_health)
 
 func _create_hearts() -> void:
 	"""Создаёт визуальные сердца"""
@@ -74,11 +75,11 @@ func _shake_hearts() -> void:
 	var shake_count = 6
 	
 	for i in shake_count:
-		var offset = Vector2(
+		var shake_offset = Vector2(
 			randf_range(-shake_amount, shake_amount),
 			randf_range(-shake_amount, shake_amount)
 		)
-		heart_container.position = original_pos + offset
+		heart_container.position = original_pos + shake_offset
 		await get_tree().create_timer(shake_duration / shake_count).timeout
 	
 	heart_container.position = original_pos
