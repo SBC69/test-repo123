@@ -12,12 +12,14 @@ signal damage_taken(damage: int)
 @export var jump_velocity: float = -400.0
 @export var acceleration: float = 1000.0
 @export var friction: float = 1000.0
+@export var bounce_velocity: float = -300.0  # Отскок при прыжке на врага
 
 @export_group("Combat")
 @export var max_health: int = 100
 @export var attack_damage: int = 20
+@export var stomp_damage: int = 1  # Урон при прыжке на врага
 @export var attack_duration: float = 0.3
-@export var invincibility_duration: float = 0.5
+@export var invincibility_duration: float = 2.0  # Увеличено до 2 секунд
 
 @export_group("Visual Feedback")
 @export var damage_flash_color: Color = Color(1, 0.3, 0.3)
@@ -37,6 +39,7 @@ enum State {
 var current_state: State = State.IDLE
 var health: int = max_health
 var is_invincible: bool = false
+var invincibility_timer: float = 0.0
 var facing_right: bool = true
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
@@ -72,8 +75,53 @@ func _physics_process(delta: float) -> void:
 	_handle_input()
 	_update_state()
 	_apply_movement(delta)
+	_handle_enemy_collision()  # Проверка прыжка на врага
 	_update_animation()
 	move_and_slide()
+
+func _process(delta: float) -> void:
+	if is_invincible:
+		_process_invincibility(delta)
+
+func _process_invincibility(delta: float) -> void:
+	"""Обработка неуязвимости с миганием"""
+	invincibility_timer += delta
+	
+	if not animated_sprite:
+		return
+	
+	# Мигание спрайта
+	var blink_speed = 8.0  # Частота мигания
+	var alpha = 0.3 + 0.7 * abs(sin(invincibility_timer * blink_speed))
+	animated_sprite.modulate.a = alpha
+	
+	# Завершение неуязвимости
+	if invincibility_timer >= invincibility_duration:
+		is_invincible = false
+		invincibility_timer = 0.0
+		animated_sprite.modulate = Color.WHITE
+
+func _handle_enemy_collision() -> void:
+	"""Обработка столкновения с врагами при прыжке сверху"""
+	# Проверяем только если игрок падает вниз
+	if velocity.y <= 0:
+		return
+	
+	# Проверяем столкновения
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+		
+		if collider and collider.is_in_group("enemy"):
+			# Проверяем, что игрок прыгает СВЕРХУ на врага
+			if global_position.y < collider.global_position.y:
+				# Наносим урон врагу
+				if collider.has_method("take_damage"):
+					collider.take_damage(stomp_damage, global_position)
+				
+				# Отскакиваем вверх
+				velocity.y = bounce_velocity
+				break
 
 func _apply_gravity(delta: float) -> void:
 	"""Применение гравитации"""
@@ -199,10 +247,9 @@ func take_damage(damage: int) -> void:
 		_play_damage_flash()
 
 func _start_invincibility() -> void:
-	"""Активация временной неуязвимости"""
+	"""Активация временной неуязвимости на 2 секунды"""
 	is_invincible = true
-	await get_tree().create_timer(invincibility_duration).timeout
-	is_invincible = false
+	invincibility_timer = 0.0
 
 func _play_damage_flash() -> void:
 	"""Визуальная индикация получения урона"""
@@ -212,7 +259,7 @@ func _play_damage_flash() -> void:
 	animated_sprite.modulate = damage_flash_color
 	await get_tree().create_timer(damage_flash_duration).timeout
 	
-	if current_state != State.DEAD and animated_sprite:
+	if current_state != State.DEAD and animated_sprite and not is_invincible:
 		animated_sprite.modulate = Color.WHITE
 
 func _die() -> void:
