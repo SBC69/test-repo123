@@ -3,33 +3,280 @@
 [ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/Player.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://enemy001" path="res://scenes/Enemy.tscn" id="2"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_bwv4p"]
-size = Vector2(1279, 35)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
+size = Vector2(400, 40)
 
 [node name="Level1" type="Node2D"]
 
+# ===========================================
+# СТАРТОВАЯ ЗОНА (безопасная, обучающая)
+# ===========================================
+
 [node name="Player" parent="." instance=ExtResource("1")]
-position = Vector2(79, 639)
+position = Vector2(100, 500)
 
-[node name="Ground" type="StaticBody2D" parent="."]
-position = Vector2(640, 700)
+# Стартовая платформа (широкая и безопасная)
+[node name="StartPlatform" type="StaticBody2D" parent="."]
+position = Vector2(200, 550)
 
-[node name="ColorRect" type="ColorRect" parent="Ground"]
-offset_left = -640.0
+[node name="ColorRect" type="ColorRect" parent="StartPlatform"]
+offset_left = -200.0
 offset_top = -20.0
-offset_right = 640.0
+offset_right = 200.0
 offset_bottom = 20.0
-color = Color(0.3, 0.6, 0.3, 1)
+color = Color(0.4, 0.7, 0.4, 1)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Ground"]
-position = Vector2(0.5, 0.5)
-shape = SubResource("RectangleShape2D_bwv4p")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StartPlatform"]
+shape = SubResource("RectangleShape2D_ground")
 
-[node name="Enemy" parent="." instance=ExtResource("2")]
-position = Vector2(400, 650)
+# ===========================================
+# ОБУЧАЮЩАЯ СЕКЦИЯ 1: Простой прыжок
+# ===========================================
 
+# Низкая платформа (легкий первый прыжок)
+[node name="Platform1" type="StaticBody2D" parent="."]
+position = Vector2(550, 530)
+
+[node name="ColorRect" type="ColorRect" parent="Platform1"]
+offset_left = -100.0
+offset_top = -15.0
+offset_right = 100.0
+offset_bottom = 15.0
+color = Color(0.5, 0.5, 0.7, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform1"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.5, 0.75)
+
+# ===========================================
+# ОБУЧАЮЩАЯ СЕКЦИЯ 2: Средний прыжок
+# ===========================================
+
+[node name="Platform2" type="StaticBody2D" parent="."]
+position = Vector2(750, 480)
+
+[node name="ColorRect" type="ColorRect" parent="Platform2"]
+offset_left = -100.0
+offset_top = -15.0
+offset_right = 100.0
+offset_bottom = 15.0
+color = Color(0.5, 0.5, 0.7, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.5, 0.75)
+
+# ===========================================
+# СЕКЦИЯ 3: Первый враг (обучение бою)
+# ===========================================
+
+[node name="Platform3" type="StaticBody2D" parent="."]
+position = Vector2(1000, 500)
+
+[node name="ColorRect" type="ColorRect" parent="Platform3"]
+offset_left = -150.0
+offset_top = -15.0
+offset_right = 150.0
+offset_bottom = 15.0
+color = Color(0.5, 0.5, 0.7, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform3"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.75, 0.75)
+
+# Первый враг (на безопасной платформе)
+[node name="Enemy1" parent="." instance=ExtResource("2")]
+position = Vector2(1050, 450)
+
+# ===========================================
+# СЕКЦИЯ 4: Вертикальная прогрессия
+# ===========================================
+
+# Нижняя платформа
+[node name="Platform4" type="StaticBody2D" parent="."]
+position = Vector2(1300, 500)
+
+[node name="ColorRect" type="ColorRect" parent="Platform4"]
+offset_left = -80.0
+offset_top = -15.0
+offset_right = 80.0
+offset_bottom = 15.0
+color = Color(0.5, 0.5, 0.7, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform4"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.4, 0.75)
+
+# Средняя платформа
+[node name="Platform5" type="StaticBody2D" parent="."]
+position = Vector2(1450, 420)
+
+[node name="ColorRect" type="ColorRect" parent="Platform5"]
+offset_left = -80.0
+offset_top = -15.0
+offset_right = 80.0
+offset_bottom = 15.0
+color = Color(0.5, 0.5, 0.7, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform5"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.4, 0.75)
+
+# Верхняя платформа
+[node name="Platform6" type="StaticBody2D" parent="."]
+position = Vector2(1600, 340)
+
+[node name="ColorRect" type="ColorRect" parent="Platform6"]
+offset_left = -100.0
+offset_top = -15.0
+offset_right = 100.0
+offset_bottom = 15.0
+color = Color(0.5, 0.5, 0.7, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform6"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.5, 0.75)
+
+# ===========================================
+# СЕКЦИЯ 5: Испытание (несколько врагов)
+# ===========================================
+
+[node name="Platform7" type="StaticBody2D" parent="."]
+position = Vector2(1850, 400)
+
+[node name="ColorRect" type="ColorRect" parent="Platform7"]
+offset_left = -200.0
+offset_top = -15.0
+offset_right = 200.0
+offset_bottom = 15.0
+color = Color(0.7, 0.5, 0.5, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform7"]
+shape = SubResource("RectangleShape2D_ground")
+
+# Два врага для испытания
 [node name="Enemy2" parent="." instance=ExtResource("2")]
-position = Vector2(800, 650)
+position = Vector2(1750, 350)
 
-[node name="Camera2D" type="Camera2D" parent="."]
-position = Vector2(640, 360)
+[node name="Enemy3" parent="." instance=ExtResource("2")]
+position = Vector2(1950, 350)
+
+# ===========================================
+# СЕКЦИЯ 6: Точные прыжки
+# ===========================================
+
+[node name="Platform8" type="StaticBody2D" parent="."]
+position = Vector2(2100, 450)
+
+[node name="ColorRect" type="ColorRect" parent="Platform8"]
+offset_left = -60.0
+offset_top = -15.0
+offset_right = 60.0
+offset_bottom = 15.0
+color = Color(0.5, 0.5, 0.7, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform8"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.3, 0.75)
+
+[node name="Platform9" type="StaticBody2D" parent="."]
+position = Vector2(2250, 380)
+
+[node name="ColorRect" type="ColorRect" parent="Platform9"]
+offset_left = -60.0
+offset_top = -15.0
+offset_right = 60.0
+offset_bottom = 15.0
+color = Color(0.5, 0.5, 0.7, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform9"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.3, 0.75)
+
+[node name="Platform10" type="StaticBody2D" parent="."]
+position = Vector2(2400, 320)
+
+[node name="ColorRect" type="ColorRect" parent="Platform10"]
+offset_left = -60.0
+offset_top = -15.0
+offset_right = 60.0
+offset_bottom = 15.0
+color = Color(0.5, 0.5, 0.7, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform10"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.3, 0.75)
+
+# ===========================================
+# ФИНАЛЬНАЯ СЕКЦИЯ: Награда
+# ===========================================
+
+[node name="GoalPlatform" type="StaticBody2D" parent="."]
+position = Vector2(2650, 300)
+
+[node name="ColorRect" type="ColorRect" parent="GoalPlatform"]
+offset_left = -150.0
+offset_top = -20.0
+offset_right = 150.0
+offset_bottom = 20.0
+color = Color(1, 0.8, 0.2, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GoalPlatform"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.75, 1)
+
+# Финальный враг (опциональный)
+[node name="Enemy4" parent="." instance=ExtResource("2")]
+position = Vector2(2650, 250)
+
+# ===========================================
+# НИЖНИЕ ГРАНИЦЫ (яма смерти)
+# ===========================================
+
+[node name="DeathZone" type="Area2D" parent="."]
+position = Vector2(1500, 750)
+
+[node name="ColorRect" type="ColorRect" parent="DeathZone"]
+offset_left = -2000.0
+offset_top = -50.0
+offset_right = 2000.0
+offset_bottom = 50.0
+color = Color(0.3, 0.1, 0.1, 0.5)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DeathZone"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(10, 2.5)
+
+# ===========================================
+# СТЕНЫ (границы уровня)
+# ===========================================
+
+# Левая стена
+[node name="LeftWall" type="StaticBody2D" parent="."]
+position = Vector2(-50, 400)
+
+[node name="ColorRect" type="ColorRect" parent="LeftWall"]
+offset_left = -25.0
+offset_top = -400.0
+offset_right = 25.0
+offset_bottom = 400.0
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.125, 20)
+
+# Правая стена
+[node name="RightWall" type="StaticBody2D" parent="."]
+position = Vector2(2900, 400)
+
+[node name="ColorRect" type="ColorRect" parent="RightWall"]
+offset_left = -25.0
+offset_top = -400.0
+offset_right = 25.0
+offset_bottom = 400.0
+color = Color(0.2, 0.2, 0.2, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.125, 20)
