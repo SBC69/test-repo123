@@ -14,8 +14,9 @@ var is_taking_damage = false  # Флаг состояния получения �
 var patrol_direction = 1
 var patrol_timer = 0.0
 var knockback_velocity = Vector2.ZERO  # Скорость отброса
+var facing_right = true  # Направление взгляда
 
-@onready var sprite = $Sprite2D
+@onready var sprite = $AnimatedSprite2D  # ИСПРАВЛЕНО: используем AnimatedSprite2D
 @onready var detection_area = $DetectionArea
 
 func _ready():
@@ -51,7 +52,22 @@ func _physics_process(delta):
 		else:
 			patrol(delta)
 	
+	# Обновляем направление спрайта
+	_update_sprite_direction()
+	
 	move_and_slide()
+
+func _update_sprite_direction():
+	"""Отзеркаливание спрайта в сторону движения"""
+	if not sprite:
+		return
+	
+	if velocity.x > 10 and not facing_right:
+		facing_right = true
+		sprite.flip_h = false
+	elif velocity.x < -10 and facing_right:
+		facing_right = false
+		sprite.flip_h = true
 
 func patrol(delta):
 	patrol_timer += delta
@@ -69,11 +85,13 @@ func attack():
 	is_attacking = true
 	velocity.x = 0
 	# Визуальная обратная связь
-	sprite.scale = Vector2(1.2, 1.2)
+	if sprite:
+		sprite.scale = Vector2(1.2, 1.2)
 	if player and player.has_method("take_damage"):
 		player.take_damage(ATTACK_DAMAGE)
 	await get_tree().create_timer(0.5).timeout
-	sprite.scale = Vector2(1, 1)
+	if sprite:
+		sprite.scale = Vector2(1, 1)
 	is_attacking = false
 
 func take_damage(damage: int, attacker_position: Vector2 = Vector2.ZERO):
@@ -102,33 +120,45 @@ func take_damage(damage: int, attacker_position: Vector2 = Vector2.ZERO):
 
 func _play_damage_effect():
 	"""Визуальный эффект получения урона"""
+	if not sprite:
+		return
+	
 	var original_position = sprite.position
-	var shake_intensity = 2.0
-	var shake_duration = 0.2
+	var original_scale = sprite.scale
+	var shake_intensity = 3.0
+	var shake_duration = 0.15
 	var flash_count = 3
 	
 	# Красная вспышка с миганием
 	for i in flash_count:
-		sprite.modulate = Color(1, 0, 0)  # Ярко-красный
+		sprite.modulate = Color(1.0, 0.0, 0.0)  # Ярко-красный
 		# Тряска
 		sprite.position = original_position + Vector2(
 			randf_range(-shake_intensity, shake_intensity),
 			randf_range(-shake_intensity, shake_intensity)
 		)
+		# Небольшое увеличение при ударе
+		sprite.scale = original_scale * 1.1
 		await get_tree().create_timer(shake_duration / (flash_count * 2)).timeout
 		
 		sprite.modulate = Color.WHITE
 		sprite.position = original_position
+		sprite.scale = original_scale
 		await get_tree().create_timer(shake_duration / (flash_count * 2)).timeout
 	
 	# Возврат к нормальному состоянию
 	sprite.modulate = Color.WHITE
 	sprite.position = original_position
+	sprite.scale = original_scale
 
 func die():
 	"""Смерть врага с эффектом"""
 	remove_from_group("enemy")
 	is_taking_damage = false
+	
+	if not sprite:
+		queue_free()
+		return
 	
 	# Эффект смерти - затемнение и падение
 	sprite.modulate = Color(0.3, 0.3, 0.3)
