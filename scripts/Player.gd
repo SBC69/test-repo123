@@ -250,4 +250,5 @@ func _on_attack_area_body_entered(body: Node2D) -> void:
 		return
 	
 	if body.has_method("take_damage"):
-		body.take_damage(attack_damage)
+		# Передаём позицию игрока для расчёта отброса
+		body.take_damage(attack_damage, global_position)
