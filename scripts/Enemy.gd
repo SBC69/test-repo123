@@ -16,7 +16,7 @@ var patrol_timer = 0.0
 var knockback_velocity = Vector2.ZERO  # Скорость отброса
 var facing_right = true  # Направление взгляда
 
-@onready var sprite = $AnimatedSprite2D  # ИСПРАВЛЕНО: используем AnimatedSprite2D
+@onready var sprite = $AnimatedSprite2D
 @onready var detection_area = $DetectionArea
 
 func _ready():
@@ -82,6 +82,10 @@ func chase_player():
 	velocity.x = direction * SPEED
 
 func attack():
+	# Проверяем неуязвимость игрока
+	if player and "is_invincible" in player and player.is_invincible:
+		return  # Не атакуем неуязвимого игрока
+	
 	is_attacking = true
 	velocity.x = 0
 	# Визуальная обратная связь
