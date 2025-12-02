@@ -243,6 +243,7 @@ animations = [{
 size = Vector2(17, 20)
 
 [node name="Player" type="CharacterBody2D"]
+scale = Vector2(2, 2)
 script = ExtResource("1")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -263,5 +264,6 @@ position = Vector2(17, 0)
 shape = SubResource("RectangleShape2D_1")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
 position_smoothing_enabled = true
 script = ExtResource("2")
