@@ -40,6 +40,8 @@ var current_state: State = State.IDLE
 var health: int = max_health
 var is_invincible: bool = false
 var invincibility_timer: float = 0.0
+var just_bounced: bool = false  # Флаг для блокировки гравитации после отскока
+var bounce_timer: float = 0.0  # Таймер блокировки гравитации
 var facing_right: bool = true
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 
@@ -121,12 +123,23 @@ func _handle_enemy_collision() -> void:
 				
 				# Отскакиваем вверх
 				velocity.y = bounce_velocity
+				
+				# Блокируем гравитацию на короткое время
+				just_bounced = true
+				bounce_timer = 0.15  # 150 миллисекунд без гравитации
 				break
 
 func _apply_gravity(delta: float) -> void:
 	"""Применение гравитации"""
 	if not is_on_floor():
-		velocity.y += gravity * delta
+		# Если только что отскочили от врага - не применяем гравитацию
+		if just_bounced:
+			bounce_timer -= delta
+			if bounce_timer <= 0:
+				just_bounced = false
+		else:
+			# Обычная гравитация
+			velocity.y += gravity * delta
 
 func _handle_input() -> void:
 	"""Обработка пользовательского ввода"""
