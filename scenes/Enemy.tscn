@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://enemy001"]
+[gd_scene load_steps=8 format=3 uid="uid://enemy001"]
 
 [ext_resource type="Script" uid="uid://s4gdo1xjhnp8" path="res://scripts/Enemy.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://hm0md5altsd6" path="res://assets/sprites/rat (2).png" id="2_55jtl"]
+[ext_resource type="Script" path="res://scripts/EnemyHealthBar.gd" id="3_healthbar"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_mpr68"]
 atlas = ExtResource("2_55jtl")
@@ -49,3 +50,10 @@ shape = SubResource("RectangleShape2D_1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
 shape = SubResource("CircleShape2D_1")
+
+[node name="HealthBarContainer" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("3_healthbar")
