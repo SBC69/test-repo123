@@ -18,15 +18,19 @@ func _ready() -> void:
 		push_error("PlayerHealthUI: не найден родительский узел")
 		return
 	
+	# Проверяем наличие сигнала
+	if not player.has_signal("health_changed"):
+		push_error("PlayerHealthUI: У Player нет сигнала health_changed")
+		return
+	
 	# Подключаемся к сигналам
-	if player.has_signal("health_changed"):
-		player.health_changed.connect(_on_health_changed)
+	player.health_changed.connect(_on_health_changed)
 	
 	# Создаём сердца
 	_create_hearts()
 	
 	# Устанавливаем начальное здоровье
-	if player.has("health") and player.has("max_health"):
+	if "health" in player and "max_health" in player:
 		_update_hearts(player.health, player.max_health)
 
 func _create_hearts() -> void:
