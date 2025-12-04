@@ -1,0 +1,96 @@
+[gd_scene load_steps=2 format=3 uid="uid://skilltree"]
+
+[ext_resource type="Script" path="res://scripts/SkillTreeUI.gd" id="1_skilltree"]
+
+[node name="SkillTreeUI" type="CanvasLayer"]
+script = ExtResource("1_skilltree")
+
+[node name="Panel" type="Panel" parent="."]
+offset_left = 100.0
+offset_top = 50.0
+offset_right = 1100.0
+offset_bottom = 650.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 980.0
+offset_bottom = 580.0
+
+[node name="Header" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Panel/VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ДЕРЕВО НАВЫКОВ"
+horizontal_alignment = 1
+
+[node name="LevelLabel" type="Label" parent="Panel/VBoxContainer/Header"]
+layout_mode = 2
+text = "Уровень: 1"
+
+[node name="SkillPointsLabel" type="Label" parent="Panel/VBoxContainer/Header"]
+layout_mode = 2
+text = "Очки навыков: 0"
+
+[node name="CloseButton" type="Button" parent="Panel/VBoxContainer/Header"]
+layout_mode = 2
+text = "X"
+
+[node name="HSeparator" type="HSeparator" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="ProgressInfo" type="HBoxContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="ExpLabel" type="Label" parent="Panel/VBoxContainer/ProgressInfo"]
+layout_mode = 2
+text = "Опыт: 0 / 100"
+
+[node name="ExpBar" type="ProgressBar" parent="Panel/VBoxContainer/ProgressInfo"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100.0
+
+[node name="HSeparator2" type="HSeparator" parent="Panel/VBoxContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Panel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SkillsGrid" type="GridContainer" parent="Panel/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 3
+
+[node name="HealthCategory" type="VBoxContainer" parent="Panel/VBoxContainer/ScrollContainer/SkillsGrid"]
+layout_mode = 2
+
+[node name="CategoryLabel" type="Label" parent="Panel/VBoxContainer/ScrollContainer/SkillsGrid/HealthCategory"]
+layout_mode = 2
+text = "=== ЗДОРОВЬЕ ==="
+horizontal_alignment = 1
+
+[node name="AttackCategory" type="VBoxContainer" parent="Panel/VBoxContainer/ScrollContainer/SkillsGrid"]
+layout_mode = 2
+
+[node name="CategoryLabel" type="Label" parent="Panel/VBoxContainer/ScrollContainer/SkillsGrid/AttackCategory"]
+layout_mode = 2
+text = "=== АТАКА ==="
+horizontal_alignment = 1
+
+[node name="MobilityCategory" type="VBoxContainer" parent="Panel/VBoxContainer/ScrollContainer/SkillsGrid"]
+layout_mode = 2
+
+[node name="CategoryLabel" type="Label" parent="Panel/VBoxContainer/ScrollContainer/SkillsGrid/MobilityCategory"]
+layout_mode = 2
+text = "=== МОБИЛЬНОСТЬ ==="
+horizontal_alignment = 1
+
+[node name="InfoLabel" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Выберите навык для разблокировки"
+horizontal_alignment = 1

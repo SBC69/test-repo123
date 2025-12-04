@@ -4,6 +4,7 @@ const SPEED = 120.0
 const JUMP_FORCE = -300.0
 const ATTACK_DAMAGE = 25
 const SPECIAL_ATTACK_DAMAGE = 40
+const EXPERIENCE_REWARD = 100  # Большая награда за босса
 
 var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 var health = 200
@@ -73,7 +74,6 @@ func special_attack():
 	attack_cooldown = 3.5
 	sprite.modulate = Color(1.5, 1, 1)
 	
-	# Прыжок и удар сверху
 	velocity.y = JUMP_FORCE
 	await get_tree().create_timer(0.3).timeout
 	
@@ -86,13 +86,12 @@ func special_attack():
 	sprite.modulate = Color(1, 1, 1) if phase == 1 else Color(1.2, 0.8, 0.8)
 	is_attacking = false
 
-func take_damage(damage: int):
+func take_damage(damage: int, attacker_position: Vector2 = Vector2.ZERO):
 	health -= damage
 	health_bar.value = health
 	sprite.modulate = Color(1, 0.3, 0.3)
 	await get_tree().create_timer(0.2).timeout
 	
-	# Вторая фаза при 50% здоровья
 	if health <= max_health / 2 and phase == 1:
 		phase = 2
 		sprite.modulate = Color(1.2, 0.8, 0.8)
@@ -104,12 +103,38 @@ func take_damage(damage: int):
 
 func die():
 	remove_from_group("enemy")
+	
+	# Награда опытом за босса
+	_grant_experience_to_player()
+	
 	sprite.modulate = Color(0.3, 0.3, 0.3)
 	set_physics_process(false)
 	$CollisionShape2D.set_deferred("disabled", true)
 	boss_defeated.emit()
 	await get_tree().create_timer(1.0).timeout
 	queue_free()
+
+func _grant_experience_to_player():
+	var progression_system = get_tree().get_first_node_in_group("progression_system")
+	if progression_system and progression_system.has_method("add_experience"):
+		progression_system.add_experience(EXPERIENCE_REWARD)
+		_show_exp_popup()
+
+func _show_exp_popup():
+	var label = Label.new()
+	label.text = "+" + str(EXPERIENCE_REWARD) + " EXP (BOSS!)"
+	label.modulate = Color(1, 0.8, 0)
+	label.position = Vector2(-50, -120)
+	label.z_index = 100
+	label.add_theme_font_size_override("font_size", 24)
+	add_child(label)
+	
+	var tween = create_tween()
+	tween.tween_property(label, "position:y", label.position.y - 70, 1.5)
+	tween.parallel().tween_property(label, "modulate:a", 0.0, 1.5)
+	
+	await tween.finished
+	label.queue_free()
 
 func set_player(p):
 	player = p
