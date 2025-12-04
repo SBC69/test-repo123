@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://level1"]
+[gd_scene load_steps=5 format=3 uid="uid://level2"]
 
 [ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/Player.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://enemy001" path="res://scenes/Enemy.tscn" id="2"]
@@ -11,7 +11,7 @@ size = Vector2(400, 40)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_transition"]
 size = Vector2(150, 200)
 
-[node name="Level1" type="Node2D"]
+[node name="Level2" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1")]
 position = Vector2(100, 500)
@@ -19,198 +19,192 @@ position = Vector2(100, 500)
 [node name="Background" type="ColorRect" parent="."]
 offset_left = -100.0
 offset_top = -100.0
-offset_right = 3000.0
+offset_right = 3100.0
 offset_bottom = 900.0
-color = Color(0.2, 0.3, 0.4, 1)
+color = Color(0.15, 0.2, 0.35, 1)
 z_index = -10
 
 [node name="StartPlatform" type="StaticBody2D" parent="."]
-position = Vector2(200, 550)
+position = Vector2(150, 550)
 
 [node name="ColorRect" type="ColorRect" parent="StartPlatform"]
-offset_left = -200.0
+offset_left = -150.0
 offset_top = -20.0
-offset_right = 200.0
+offset_right = 150.0
 offset_bottom = 20.0
-color = Color(0.4, 0.7, 0.4, 1)
+color = Color(0.3, 0.5, 0.3, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StartPlatform"]
 shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.75, 1)
+
+[node name="Enemy1" parent="." instance=ExtResource("2")]
+position = Vector2(400, 450)
 
 [node name="Platform1" type="StaticBody2D" parent="."]
-position = Vector2(550, 530)
+position = Vector2(450, 500)
 
 [node name="ColorRect" type="ColorRect" parent="Platform1"]
-offset_left = -100.0
+offset_left = -120.0
 offset_top = -15.0
-offset_right = 100.0
+offset_right = 120.0
 offset_bottom = 15.0
-color = Color(0.5, 0.5, 0.7, 1)
+color = Color(0.45, 0.45, 0.6, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform1"]
 shape = SubResource("RectangleShape2D_ground")
-scale = Vector2(0.5, 0.75)
+scale = Vector2(0.6, 0.75)
+
+[node name="Enemy2" parent="." instance=ExtResource("2")]
+position = Vector2(650, 400)
 
 [node name="Platform2" type="StaticBody2D" parent="."]
-position = Vector2(750, 480)
+position = Vector2(700, 450)
 
 [node name="ColorRect" type="ColorRect" parent="Platform2"]
-offset_left = -100.0
+offset_left = -80.0
 offset_top = -15.0
-offset_right = 100.0
+offset_right = 80.0
 offset_bottom = 15.0
-color = Color(0.5, 0.5, 0.7, 1)
+color = Color(0.45, 0.45, 0.6, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform2"]
 shape = SubResource("RectangleShape2D_ground")
-scale = Vector2(0.5, 0.75)
-
-[node name="Enemy1" parent="." instance=ExtResource("2")]
-position = Vector2(750, 420)
+scale = Vector2(0.4, 0.75)
 
 [node name="Platform3" type="StaticBody2D" parent="."]
-position = Vector2(1000, 500)
+position = Vector2(900, 400)
 
 [node name="ColorRect" type="ColorRect" parent="Platform3"]
-offset_left = -150.0
+offset_left = -70.0
 offset_top = -15.0
-offset_right = 150.0
+offset_right = 70.0
 offset_bottom = 15.0
-color = Color(0.5, 0.5, 0.7, 1)
+color = Color(0.45, 0.45, 0.6, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform3"]
 shape = SubResource("RectangleShape2D_ground")
-scale = Vector2(0.75, 0.75)
-
-[node name="Enemy2" parent="." instance=ExtResource("2")]
-position = Vector2(1050, 450)
+scale = Vector2(0.35, 0.75)
 
 [node name="Platform4" type="StaticBody2D" parent="."]
-position = Vector2(1300, 500)
+position = Vector2(1100, 350)
 
 [node name="ColorRect" type="ColorRect" parent="Platform4"]
-offset_left = -80.0
+offset_left = -70.0
 offset_top = -15.0
-offset_right = 80.0
+offset_right = 70.0
 offset_bottom = 15.0
-color = Color(0.5, 0.5, 0.7, 1)
+color = Color(0.45, 0.45, 0.6, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform4"]
 shape = SubResource("RectangleShape2D_ground")
-scale = Vector2(0.4, 0.75)
+scale = Vector2(0.35, 0.75)
+
+[node name="Enemy3" parent="." instance=ExtResource("2")]
+position = Vector2(1100, 290)
+
+[node name="LongPlatform" type="StaticBody2D" parent="."]
+position = Vector2(1450, 480)
+
+[node name="ColorRect" type="ColorRect" parent="LongPlatform"]
+offset_left = -250.0
+offset_top = -20.0
+offset_right = 250.0
+offset_bottom = 20.0
+color = Color(0.6, 0.4, 0.4, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LongPlatform"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(1.25, 1)
+
+[node name="Enemy4" parent="." instance=ExtResource("2")]
+position = Vector2(1300, 430)
+
+[node name="Enemy5" parent="." instance=ExtResource("2")]
+position = Vector2(1500, 430)
+
+[node name="Enemy6" parent="." instance=ExtResource("2")]
+position = Vector2(1650, 430)
 
 [node name="Platform5" type="StaticBody2D" parent="."]
-position = Vector2(1450, 420)
+position = Vector2(1850, 400)
 
 [node name="ColorRect" type="ColorRect" parent="Platform5"]
+offset_left = -90.0
+offset_top = -15.0
+offset_right = 90.0
+offset_bottom = 15.0
+color = Color(0.45, 0.45, 0.6, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform5"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.45, 0.75)
+
+[node name="Platform6" type="StaticBody2D" parent="."]
+position = Vector2(2050, 350)
+
+[node name="ColorRect" type="ColorRect" parent="Platform6"]
+offset_left = -70.0
+offset_top = -15.0
+offset_right = 70.0
+offset_bottom = 15.0
+color = Color(0.45, 0.45, 0.6, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform6"]
+shape = SubResource("RectangleShape2D_ground")
+scale = Vector2(0.35, 0.75)
+
+[node name="Enemy7" parent="." instance=ExtResource("2")]
+position = Vector2(2050, 290)
+
+[node name="Platform7" type="StaticBody2D" parent="."]
+position = Vector2(2250, 300)
+
+[node name="ColorRect" type="ColorRect" parent="Platform7"]
 offset_left = -80.0
 offset_top = -15.0
 offset_right = 80.0
 offset_bottom = 15.0
-color = Color(0.5, 0.5, 0.7, 1)
+color = Color(0.45, 0.45, 0.6, 1)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform5"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform7"]
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.4, 0.75)
 
-[node name="Enemy3" parent="." instance=ExtResource("2")]
-position = Vector2(1450, 360)
+[node name="Platform8" type="StaticBody2D" parent="."]
+position = Vector2(2450, 380)
 
-[node name="Platform6" type="StaticBody2D" parent="."]
-position = Vector2(1600, 340)
-
-[node name="ColorRect" type="ColorRect" parent="Platform6"]
+[node name="ColorRect" type="ColorRect" parent="Platform8"]
 offset_left = -100.0
 offset_top = -15.0
 offset_right = 100.0
 offset_bottom = 15.0
-color = Color(0.5, 0.5, 0.7, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform6"]
-shape = SubResource("RectangleShape2D_ground")
-scale = Vector2(0.5, 0.75)
-
-[node name="Platform7" type="StaticBody2D" parent="."]
-position = Vector2(1850, 400)
-
-[node name="ColorRect" type="ColorRect" parent="Platform7"]
-offset_left = -200.0
-offset_top = -15.0
-offset_right = 200.0
-offset_bottom = 15.0
-color = Color(0.7, 0.5, 0.5, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform7"]
-shape = SubResource("RectangleShape2D_ground")
-
-[node name="Enemy4" parent="." instance=ExtResource("2")]
-position = Vector2(1750, 350)
-
-[node name="Enemy5" parent="." instance=ExtResource("2")]
-position = Vector2(1950, 350)
-
-[node name="Platform8" type="StaticBody2D" parent="."]
-position = Vector2(2100, 450)
-
-[node name="ColorRect" type="ColorRect" parent="Platform8"]
-offset_left = -60.0
-offset_top = -15.0
-offset_right = 60.0
-offset_bottom = 15.0
-color = Color(0.5, 0.5, 0.7, 1)
+color = Color(0.45, 0.45, 0.6, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform8"]
 shape = SubResource("RectangleShape2D_ground")
-scale = Vector2(0.3, 0.75)
+scale = Vector2(0.5, 0.75)
 
-[node name="Platform9" type="StaticBody2D" parent="."]
-position = Vector2(2250, 380)
-
-[node name="ColorRect" type="ColorRect" parent="Platform9"]
-offset_left = -60.0
-offset_top = -15.0
-offset_right = 60.0
-offset_bottom = 15.0
-color = Color(0.5, 0.5, 0.7, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform9"]
-shape = SubResource("RectangleShape2D_ground")
-scale = Vector2(0.3, 0.75)
-
-[node name="Enemy6" parent="." instance=ExtResource("2")]
-position = Vector2(2250, 320)
-
-[node name="Platform10" type="StaticBody2D" parent="."]
-position = Vector2(2400, 320)
-
-[node name="ColorRect" type="ColorRect" parent="Platform10"]
-offset_left = -60.0
-offset_top = -15.0
-offset_right = 60.0
-offset_bottom = 15.0
-color = Color(0.5, 0.5, 0.7, 1)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform10"]
-shape = SubResource("RectangleShape2D_ground")
-scale = Vector2(0.3, 0.75)
+[node name="Enemy8" parent="." instance=ExtResource("2")]
+position = Vector2(2450, 320)
 
 [node name="GoalPlatform" type="StaticBody2D" parent="."]
-position = Vector2(2650, 300)
+position = Vector2(2750, 450)
 
 [node name="ColorRect" type="ColorRect" parent="GoalPlatform"]
-offset_left = -150.0
-offset_top = -20.0
-offset_right = 150.0
-offset_bottom = 20.0
-color = Color(1, 0.8, 0.2, 1)
+offset_left = -180.0
+offset_top = -25.0
+offset_right = 180.0
+offset_bottom = 25.0
+color = Color(0.8, 0.6, 0.2, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GoalPlatform"]
 shape = SubResource("RectangleShape2D_ground")
-scale = Vector2(0.75, 1)
+scale = Vector2(0.9, 1.25)
 
 [node name="LevelTransition" type="Area2D" parent="GoalPlatform"]
 script = ExtResource("4")
-next_level_path = "res://scenes/Level2.tscn"
+next_level_path = "res://scenes/Level3.tscn"
 
 [node name="ColorRect" type="ColorRect" parent="GoalPlatform/LevelTransition"]
 offset_left = -75.0
@@ -227,7 +221,7 @@ offset_left = -60.0
 offset_top = -10.0
 offset_right = 60.0
 offset_bottom = 20.0
-text = "LEVEL 2 →"
+text = "LEVEL 3 →"
 horizontal_alignment = 1
 
 [node name="DeathZone" type="Area2D" parent="."]
@@ -260,7 +254,7 @@ shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.125, 20)
 
 [node name="RightWall" type="StaticBody2D" parent="."]
-position = Vector2(2900, 400)
+position = Vector2(3000, 400)
 
 [node name="ColorRect" type="ColorRect" parent="RightWall"]
 offset_left = -25.0
