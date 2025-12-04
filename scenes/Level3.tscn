@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://level3"]
+[gd_scene load_steps=7 format=3 uid="uid://level3"]
 
 [ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/Player.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://enemy001" path="res://scenes/Enemy.tscn" id="2"]
 [ext_resource type="Script" path="res://scripts/DeathZone.gd" id="3"]
 [ext_resource type="Script" path="res://scripts/LevelTransition.gd" id="4"]
 [ext_resource type="Script" path="res://scripts/Boss.gd" id="5"]
+[ext_resource type="PackedScene" uid="uid://skilltree" path="res://scenes/SkillTreeUI.tscn" id="6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(400, 40)
@@ -16,6 +17,8 @@ size = Vector2(150, 200)
 size = Vector2(80, 120)
 
 [node name="Level3" type="Node2D"]
+
+[node name="SkillTreeUI" parent="." instance=ExtResource("6")]
 
 [node name="Player" parent="." instance=ExtResource("1")]
 position = Vector2(100, 500)
@@ -192,7 +195,7 @@ color = Color(0.7, 0.3, 0.3, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(2, 1.5)
 
-[node name="Boss" type="CharacterBody2D" parent="."]
+[node name="Boss" type="CharacterBody2D" parent="." groups=["enemy"]]
 position = Vector2(2950, 350)
 script = ExtResource("5")
 

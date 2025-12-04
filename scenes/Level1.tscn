@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://level1"]
+[gd_scene load_steps=6 format=3 uid="uid://level1"]
 
 [ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/Player.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://enemy001" path="res://scenes/Enemy.tscn" id="2"]
 [ext_resource type="Script" path="res://scripts/DeathZone.gd" id="3"]
 [ext_resource type="Script" path="res://scripts/LevelTransition.gd" id="4"]
+[ext_resource type="PackedScene" uid="uid://skilltree" path="res://scenes/SkillTreeUI.tscn" id="5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(400, 40)
@@ -12,6 +13,8 @@ size = Vector2(400, 40)
 size = Vector2(150, 200)
 
 [node name="Level1" type="Node2D"]
+
+[node name="SkillTreeUI" parent="." instance=ExtResource("5")]
 
 [node name="Player" parent="." instance=ExtResource("1")]
 position = Vector2(100, 500)
