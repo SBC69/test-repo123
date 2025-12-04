@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://level2"]
 
-[ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/Player.tscn" id="1"]
-[ext_resource type="PackedScene" uid="uid://enemy001" path="res://scenes/Enemy.tscn" id="2"]
-[ext_resource type="Script" path="res://scripts/DeathZone.gd" id="3"]
-[ext_resource type="Script" path="res://scripts/LevelTransition.gd" id="4"]
+[ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/Player.tscn" id="1_player"]
+[ext_resource type="PackedScene" uid="uid://enemy001" path="res://scenes/Enemy.tscn" id="2_enemy"]
+[ext_resource type="Script" path="res://scripts/DeathZone.gd" id="3_deathzone"]
+[ext_resource type="Script" path="res://scripts/LevelTransition.gd" id="4_transition"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(400, 40)
@@ -13,7 +13,7 @@ size = Vector2(150, 200)
 
 [node name="Level2" type="Node2D"]
 
-[node name="Player" parent="." instance=ExtResource("1")]
+[node name="Player" parent="." instance=ExtResource("1_player")]
 position = Vector2(100, 500)
 
 [node name="Background" type="ColorRect" parent="."]
@@ -38,7 +38,7 @@ color = Color(0.3, 0.5, 0.3, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.75, 1)
 
-[node name="Enemy1" parent="." instance=ExtResource("2")]
+[node name="Enemy1" parent="." instance=ExtResource("2_enemy")]
 position = Vector2(400, 450)
 
 [node name="Platform1" type="StaticBody2D" parent="."]
@@ -55,7 +55,7 @@ color = Color(0.45, 0.45, 0.6, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.6, 0.75)
 
-[node name="Enemy2" parent="." instance=ExtResource("2")]
+[node name="Enemy2" parent="." instance=ExtResource("2_enemy")]
 position = Vector2(650, 400)
 
 [node name="Platform2" type="StaticBody2D" parent="."]
@@ -100,7 +100,7 @@ color = Color(0.45, 0.45, 0.6, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.35, 0.75)
 
-[node name="Enemy3" parent="." instance=ExtResource("2")]
+[node name="Enemy3" parent="." instance=ExtResource("2_enemy")]
 position = Vector2(1100, 290)
 
 [node name="LongPlatform" type="StaticBody2D" parent="."]
@@ -117,13 +117,13 @@ color = Color(0.6, 0.4, 0.4, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(1.25, 1)
 
-[node name="Enemy4" parent="." instance=ExtResource("2")]
+[node name="Enemy4" parent="." instance=ExtResource("2_enemy")]
 position = Vector2(1300, 430)
 
-[node name="Enemy5" parent="." instance=ExtResource("2")]
+[node name="Enemy5" parent="." instance=ExtResource("2_enemy")]
 position = Vector2(1500, 430)
 
-[node name="Enemy6" parent="." instance=ExtResource("2")]
+[node name="Enemy6" parent="." instance=ExtResource("2_enemy")]
 position = Vector2(1650, 430)
 
 [node name="Platform5" type="StaticBody2D" parent="."]
@@ -154,7 +154,7 @@ color = Color(0.45, 0.45, 0.6, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.35, 0.75)
 
-[node name="Enemy7" parent="." instance=ExtResource("2")]
+[node name="Enemy7" parent="." instance=ExtResource("2_enemy")]
 position = Vector2(2050, 290)
 
 [node name="Platform7" type="StaticBody2D" parent="."]
@@ -185,7 +185,7 @@ color = Color(0.45, 0.45, 0.6, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.5, 0.75)
 
-[node name="Enemy8" parent="." instance=ExtResource("2")]
+[node name="Enemy8" parent="." instance=ExtResource("2_enemy")]
 position = Vector2(2450, 320)
 
 [node name="GoalPlatform" type="StaticBody2D" parent="."]
@@ -203,7 +203,7 @@ shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(0.9, 1.25)
 
 [node name="LevelTransition" type="Area2D" parent="GoalPlatform"]
-script = ExtResource("4")
+script = ExtResource("4_transition")
 next_level_path = "res://scenes/Level3.tscn"
 
 [node name="ColorRect" type="ColorRect" parent="GoalPlatform/LevelTransition"]
@@ -226,7 +226,7 @@ horizontal_alignment = 1
 
 [node name="DeathZone" type="Area2D" parent="."]
 position = Vector2(1500, 750)
-script = ExtResource("3")
+script = ExtResource("3_deathzone")
 
 [node name="ColorRect" type="ColorRect" parent="DeathZone"]
 offset_left = -2000.0
