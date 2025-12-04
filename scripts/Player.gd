@@ -16,10 +16,10 @@ signal damage_taken(damage: int)
 
 @export_group("Combat")
 @export var max_health: int = 100
-@export var attack_damage: int = 20
-@export var stomp_damage: int = 1  # Урон при прыжке на врага
+@export var attack_damage: int = 25
+@export var stomp_damage: int = 30  # Усиленный урон при прыжке на врага
 @export var attack_duration: float = 0.3
-@export var invincibility_duration: float = 2.0  # Увеличено до 2 секунд
+@export var invincibility_duration: float = 3.0  # Увеличено до 3 секунд для более честного окна
 
 @export_group("Visual Feedback")
 @export var damage_flash_color: Color = Color(1, 0.3, 0.3)
@@ -260,7 +260,7 @@ func take_damage(damage: int) -> void:
 		_play_damage_flash()
 
 func _start_invincibility() -> void:
-	"""Активация временной неуязвимости на 2 секунды"""
+	"""Активация временной неуязвимости"""
 	is_invincible = true
 	invincibility_timer = 0.0
 
