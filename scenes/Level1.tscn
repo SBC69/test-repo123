@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://level1"]
+[gd_scene load_steps=7 format=3 uid="uid://level1"]
 
 [ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/Player.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://enemy001" path="res://scenes/Enemy.tscn" id="2"]
@@ -227,7 +227,7 @@ offset_left = -60.0
 offset_top = -10.0
 offset_right = 60.0
 offset_bottom = 20.0
-text = "LEVEL 2 →"
+text = "LEVEL 2 ->"
 horizontal_alignment = 1
 
 [node name="DeathZone" type="Area2D" parent="."]

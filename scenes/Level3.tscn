@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://level3"]
+[gd_scene load_steps=9 format=3 uid="uid://level3"]
 
 [ext_resource type="PackedScene" uid="uid://player001" path="res://scenes/Player.tscn" id="1"]
 [ext_resource type="PackedScene" uid="uid://enemy001" path="res://scenes/Enemy.tscn" id="2"]
@@ -192,7 +192,7 @@ color = Color(0.7, 0.3, 0.3, 1)
 shape = SubResource("RectangleShape2D_ground")
 scale = Vector2(2, 1.5)
 
-[node name="Boss" type="CharacterBody2D" parent="."]
+[node name="Boss" type="CharacterBody2D" parent="." groups=["enemy"]]
 position = Vector2(2950, 350)
 script = ExtResource("5")
 
